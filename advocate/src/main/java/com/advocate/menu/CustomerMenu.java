@@ -139,7 +139,7 @@ public class CustomerMenu {
 
 
 
-	// handling Customer dao☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮
+	// handling Customer dao
 
 	public static void addCustomer() throws SystemException {
 
@@ -176,7 +176,7 @@ public class CustomerMenu {
 	}
 
 	// to modify the Customer details
-	private static void modifyCustomer() {
+	private static void modifyCustomer() throws InvalidCustomerException {
 
 		while (true) {
 			List<Customer> customers = customerDao.getAllCustomers();
@@ -223,8 +223,13 @@ public class CustomerMenu {
 					int newAge = Integer.parseInt(sc.nextLine());
 					customer.setAge(newAge);
 
-					customerDao.editCustomer(selectedId, customer);
-					return;
+					if(!isCorrectPhoneNumber(newPhone) || !isCorrectEmail(newEmail)) {
+						throw new InvalidCustomerException("\nInvalid inputs email should ends with @gmail.com or phone no should 10 number of digits");
+					}else {
+						customerDao.editCustomer(selectedId, customer);
+					}
+				
+				
 
 				}
 			}
