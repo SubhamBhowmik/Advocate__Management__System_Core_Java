@@ -8,6 +8,7 @@ import com.advocate.auth.CustomerLoginAuth;
 import com.advocate.dao.CustomerDao;
 import com.advocate.dao.Impl.CustomerDaoDbImpl;
 import com.advocate.entity.Customer;
+import com.advocate.exceptions.InvalidCustomerException;
 import com.advocate.exceptions.SystemException;
 
 public class CustomerMenu {
@@ -88,43 +89,73 @@ public class CustomerMenu {
 
 	}
 
-	private static Customer createCustomer() {
+	private static Customer createCustomer() throws InvalidCustomerException {
 		Customer customer = new Customer();
-		System.out.print("\n 1: Enter customerName :");
-		String customerName = sc.nextLine();
-		customer.setCustomerName(customerName);
-		System.out.print("\n 2. Enter Password :");
-		String password = sc.nextLine();
-		customer.setPassword(password);
-		System.out.print("\n 3. Enter Email :");
-		String email = sc.nextLine();
-		customer.setEmail(email);
-		System.out.print("\n 4. Enter Address :");
-		String address = sc.nextLine();
-		customer.setAddress(address);
-		System.out.print("\n 5. Enter Phone :");
-		String phone = sc.nextLine();
-		customer.setPhone(phone);
-		System.out.print("\n 6. Enter Age :");
-		String age = sc.nextLine();
-		customer.setAge(Integer.parseInt(age));
+	
+		
+			System.out.print("\n 1: Enter customerName :");
+			String customerName = sc.nextLine();
+			customer.setCustomerName(customerName);
+			System.out.print("\n 2. Enter Password :");
+			String password = sc.nextLine();
+			customer.setPassword(password);
+			System.out.print("\n 3. Enter Email :");
+			String email = sc.nextLine();
+			customer.setEmail(email);
+			System.out.print("\n 4. Enter Address :");
+			String address = sc.nextLine();
+			customer.setAddress(address);
+			
+			
+			
+			System.out.print("\n 5. Enter Phone :");
+			String phone = sc.nextLine();
+		
+			customer.setPhone(phone);
+			
+			
+			System.out.print("\n 6. Enter Age :");
+			String age = sc.nextLine();
+			customer.setAge(Integer.parseInt(age));
 
-		// System.out.println("\n New Customer created successfully");
-		return customer;
+			if(!isCorrectPhoneNumber(phone) || !isCorrectEmail(email)) {
+				throw new InvalidCustomerException("\nInvalid inputs email should ends with @gmail.com or phone no should 10 number of digits");
+			}
+			// System.out.println("\n New Customer created successfully");
+			return customer;
+			
+	
 
 	}
+
+	private static boolean isCorrectPhoneNumber(String phone) {
+		
+		return phone.matches("\\d{10}");
+	}
+	
+	private static boolean isCorrectEmail(String email) {
+		return email.endsWith("@gmail.com");
+	}
+
+
 
 	// handling Customer dao☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮☮
 
 	public static void addCustomer() throws SystemException {
 
-		Customer createdCustomer;
+		Customer createdCustomer = null;
 
 		try {
-			createdCustomer = createCustomer();
+			try {
+				createdCustomer = createCustomer();
+			} catch (InvalidCustomerException e) {
+			System.out.println("Please fill with valid details " + e.getMessage());
+			return;
+			}
 			customerDao.addCustomer(createdCustomer);
 		} catch (SQLException e) {
 			System.out.println(e);
+			return;
 		}
 
 	}
